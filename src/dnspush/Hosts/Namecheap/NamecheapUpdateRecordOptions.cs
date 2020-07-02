@@ -9,6 +9,6 @@ namespace dnspush.Hosts.Namecheap
         public string HostName { get; set; }
         public string RecordType { get; set; }
         public string Address { get; set; }
-        public Int16? Ttl { get; set; }
+        public int? Ttl { get; set; }
     }
 }

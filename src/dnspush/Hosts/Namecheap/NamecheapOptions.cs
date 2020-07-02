@@ -6,7 +6,8 @@ namespace dnspush.Hosts.Namecheap
     {
         public string ApiUser { get; set; }
         public string ApiKey { get; set; }
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string ClientIp { get; set; }
+        public bool IsSandbox { get; set; }
     }
 }

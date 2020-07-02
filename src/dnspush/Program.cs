@@ -1,4 +1,6 @@
 ﻿using System;
+using dnspush.Hosts.Namecheap;
+using dnspush.OptionValidators;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace dnspush
@@ -10,20 +12,113 @@ namespace dnspush
             var app = new CommandLineApplication();
 
             app.HelpOption();
-            var optionProvider = app.Option("-p|--provider <PROVIDER URL>", "The subject", CommandOptionType.SingleValue);
-            var optionHost = app.Option<int>("-h|--host <DNS HOST>", "dfgdfgdfg", CommandOptionType.SingleValue);
+            var optionApiUser = app.Option
+            (
+                "-u|--api-user <API_USER>",
+                "Username required to access the API",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            optionApiUser.Validators.Add(new ApiUserLengthValidator());
+            var optionApiKey = app.Option
+            (
+                "-k|--api-key <API_KEY>",
+                "Password required used to access the API",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            optionApiKey.Validators.Add(new ApiKeyLengthValidator());
+            var optionUserName = app.Option
+            (
+                "-U|--user-name <USER_NAME>",
+                "The Username on which a command is executed. Generally, the values of ApiUser and UserName parameters are the same.",
+                CommandOptionType.SingleValue
+            );
+            optionUserName.Validators.Add(new UserNameLengthValidator());
+            var optionClientIp = app.Option
+            (
+                "-p|--client-ip <CLIENT_IP>",
+                "An IP address of the server from which our system receives API calls (only IPv4 can be used)",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            optionClientIp.Validators.Add(new ClientIpLengthValidator());
+            optionClientIp.Validators.Add(new ClientIpFormatValidator());
+            var optionSld = app.Option
+            (
+                "-s|--sld <SLD>",
+                "Second-level domain of the record to update. In example.com, 'example' is the second-level domain of the .com TLD",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+                optionSld.Validators.Add(new SldLengthValidator());
+            var optionTld = app.Option
+            (
+                "-t|--tld <TLD>",
+                "Top-level domain of the record to update. In example.com, 'com' is the top-level domain",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+                optionTld.Validators.Add(new TldLengthValidator());
+            var optionHostName = app.Option
+            (
+                "-h|--host-name <HOST_NAME>", "Sub-domain/hostname of the record to update",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            var optionRecordType = app.Option
+            (
+                "-T|--record-type <RECORD_TYPE>", "Possible values: 'A', 'CNAME'",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            optionRecordType.Validators.Add(new RecordTypeValidValuesValidator());
+            var optionAddress = app.Option
+            (
+                "-a|--address <ADDRESS>",
+                "Possible values are a URL or an IP address. The value for this parameter is based on RECORD_TYPE",
+                CommandOptionType.SingleValue
+            )
+                .IsRequired();
+            optionAddress.Validators.Add(new AddressFormatValidator());
+            var optionTtl = app.Option<int>
+            (
+                "-l|--ttl <TTL>",
+                "Time to live of the record to update. Possible values: any value between 60 to 60000",
+                CommandOptionType.SingleValue
+            );
+            optionTtl.Validators.Add(new TtlRangeValidator());
+            var optionSandbox = app.Option
+            (
+                "-b|--sandbox <SANDBOX>",
+                "Use test server environment",
+                CommandOptionType.NoValue
+            );
 
             app.OnExecuteAsync(async cancellationToken =>
             {
-                var subject = optionProvider.HasValue()
-                    ? optionProvider.Value()
-                    : "world";
-
-                var count = optionHost.HasValue() ? optionHost.ParsedValue : 1;
-                for (var i = 0; i < count; i++)
+                var hostOptions = new NamecheapOptions
                 {
-                    Console.WriteLine($"Hello {subject}!");
-                }
+                    ApiUser = optionApiUser.Value(),
+                    ApiKey = optionApiKey.Value(),
+                    UserName = optionUserName.HasValue() ? optionUserName.Value() : optionApiUser.Value(),
+                    ClientIp = optionClientIp.Value(),
+                    IsSandbox = optionSandbox.HasValue(),
+                };
+                using var host = new NamecheapHost(hostOptions);
+
+                var updateOptions = new NamecheapUpdateRecordOptions
+                {
+                    Sld = optionSld.Value(),
+                    Tld = optionTld.Value(),
+                    HostName = optionHostName.Value(),
+                    RecordType = optionRecordType.Value(),
+                    Address = optionAddress.Value(),
+                    Ttl = optionTtl.HasValue() ? optionTtl.ParsedValue : default,
+                };
+
+                await host.UpdateRecordAsync(updateOptions, cancellationToken);
+
                 return 0;
             });
 
