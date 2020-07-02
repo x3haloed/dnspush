@@ -24,7 +24,8 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish
-      run: dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
+      run: |
+        dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
         dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
     - name: Publish win-x86
       run: dotnet publish -r win-x86 --configuration Release /p:PublishSingleFile=true
