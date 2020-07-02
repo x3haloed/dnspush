@@ -24,21 +24,21 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: Publish win-x64
-      run: dotnet publish -r win-x64 --configuration Release
+      run: dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true
     - name: Publish win-x86
-      run: dotnet publish -r win-x86 --configuration Release
+      run: dotnet publish -r win-x86 --configuration Release /p:PublishSingleFile=true
     - name: Publish win-arm
-      run: dotnet publish -r win-arm --configuration Release
+      run: dotnet publish -r win-arm --configuration Release /p:PublishSingleFile=true
     - name: Publish osx-x64
-      run: dotnet publish -r osx-x64 --configuration Release
+      run: dotnet publish -r osx-x64 --configuration Release /p:PublishSingleFile=true
     - name: Publish linux-x64
-      run: dotnet publish -r linux-x64 --configuration Release
+      run: dotnet publish -r linux-x64 --configuration Release /p:PublishSingleFile=true
     - name: Publish linux-musl-x64
-      run: dotnet publish -r linux-musl-x64 --configuration Release
+      run: dotnet publish -r linux-musl-x64 --configuration Release /p:PublishSingleFile=true
     - name: Publish linux-arm
-      run: dotnet publish -r linux-arm --configuration Release
+      run: dotnet publish -r linux-arm --configuration Release /p:PublishSingleFile=true
     - name: Publish linux-arm64
-      run: dotnet publish -r linux-arm64 --configuration Release
+      run: dotnet publish -r linux-arm64 --configuration Release /p:PublishSingleFile=true
     - name: Upload Server Artifact
       uses: actions/upload-artifact@v2
       with:
