@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Validation;
 
@@ -13,7 +14,8 @@ namespace dnspush.OptionValidators
             if (!option.HasValue()) return ValidationResult.Success;
             var val = option.Value();
 
-            if (!Uri.TryCreate(val, UriKind.Absolute, out _))
+            bool isValidIpAddress = IPAddress.TryParse(val, out _);
+            if (!isValidIpAddress && !Uri.TryCreate(val, UriKind.Absolute, out _))
             {
                 return new ValidationResult($"The value for --{option.LongName} must be either a valid IP address or URL");
             }

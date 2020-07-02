@@ -133,7 +133,8 @@ namespace dnspush.Hosts.Namecheap
             if (options.Address == null) {
                 throw new ArgumentNullException(nameof(options.Address));
             }
-            if (!Uri.TryCreate(options.Address, UriKind.Absolute, out _))
+            bool isValidIpAddress = IPAddress.TryParse(options.Address, out _);
+            if (!isValidIpAddress && !Uri.TryCreate(options.Address, UriKind.Absolute, out _))
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(options.Address),
