@@ -158,8 +158,13 @@ namespace dnspush.Hosts.Namecheap
             using (HttpResponseMessage response = await _httpClient.PostAsync("", formContent, cancellationToken))
             {
                 Log.Information("DNS records response received: {status}", response.StatusCode);
-                response.EnsureSuccessStatusCode();
-                Log.Information("DNS records response OK.");
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    Log.Error("DNS records request failed with status: {status}", response.StatusCode);
+                    return false;
+                }
+
                 responseDocument = XDocument.Parse(await response.Content.ReadAsStringAsync());
                 Log.Information("DNS records parsed.");
                 Log.Debug("{document}", responseDocument);
@@ -176,6 +181,12 @@ namespace dnspush.Hosts.Namecheap
             if ("ERROR".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
             {
                 Log.Error("DNS records request failed: {errors}", docRoot.Descendants(defaultNs.GetName("Error")));
+                Log.Information("DNS records request failed. Quitting with failure status.");
+                return false;
+            }
+            else if (!"OK".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("DNS records request resulted in an unexpected status: {response}", responseDocument);
                 Log.Information("DNS records request failed. Quitting with failure status.");
                 return false;
             }
@@ -222,9 +233,38 @@ namespace dnspush.Hosts.Namecheap
             Log.Debug("{message}", formContent);
             using (HttpResponseMessage response = await _httpClient.PostAsync("", formContent, cancellationToken))
             {
-                Log.Information("API response received: {status}", response.StatusCode);
-                return response.IsSuccessStatusCode;
+                Log.Information("DNS update response received: {status}", response.StatusCode);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Log.Error("DNS update request failed with status: {status}", response.StatusCode);
+                    return false;
+                }
+
+                responseDocument = XDocument.Parse(await response.Content.ReadAsStringAsync());
+                Log.Information("DNS update response parsed.");
+                Log.Debug("{document}", responseDocument);
             }
+
+            docRoot = responseDocument.Root;
+
+            responseStatus = docRoot.Attribute("Status").Value;
+            Log.Debug("DNS update response status: {status}", responseStatus);
+
+            if ("ERROR".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("DNS update request failed: {errors}", docRoot.Descendants(defaultNs.GetName("Error")));
+                Log.Information("DNS update request failed. Quitting with failure status.");
+                return false;
+            }
+            else if (!"OK".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
+            {
+                Log.Error("DNS update request resulted in an unexpected status: {response}", responseDocument);
+                Log.Information("DNS update request failed. Quitting with failure status.");
+                return false;
+            }
+
+            return true;
         }
 
         public void Dispose()
