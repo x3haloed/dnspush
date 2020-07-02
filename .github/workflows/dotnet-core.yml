@@ -23,8 +23,18 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish
-      run: dotnet publish -r linux-x64 --configuration Release
+    - name: Publish win-x64
+      run: dotnet publish -r win-x64 --configuration Release
+    - name: Publish win-x86
+      run: dotnet publish -r win-x86 --configuration Release
+    - name: Publish win-arm
+      run: dotnet publish -r win-arm --configuration Release
+    - name: Publish win-arm64
+      run: dotnet publish -r win-arm64 --configuration Release
+    - name: Publish win7-x64
+      run: dotnet publish -r win7-x64 --configuration Release
+    - name: Publish win7-x86
+      run: dotnet publish -r win7-x86 --configuration Release
     - name: Upload Server Artifact
       uses: actions/upload-artifact@v2
       with:
