@@ -31,11 +31,11 @@ jobs:
         # Artifact name
         name: server-${{ env.name }}
         # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/dnspush/dnspush/src/DnsPush.Server/**/publish/*
+        path: ${{ github.workspace }}/src/DnsPush.Server/**/publish/*
     - name: Upload Console Artifact
       uses: actions/upload-artifact@v2
       with:
         # Artifact name
         name: console-${{ env.name }}
         # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/dnspush/dnspush/src/DnsPush.Console/**/publish/*
+        path: ${{ github.workspace }}/src/DnsPush.Console/**/publish/*
