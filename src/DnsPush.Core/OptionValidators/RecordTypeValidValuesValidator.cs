@@ -1,11 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Validation;
 
-namespace dnspush.OptionValidators
+namespace DnsPush.Core.OptionValidators
 {
-    public class TldLengthValidator : IOptionValidator
+    public class RecordTypeValidValuesValidator : IOptionValidator
     {
         public ValidationResult GetValidationResult(CommandOption option, ValidationContext context)
         {
@@ -13,13 +14,9 @@ namespace dnspush.OptionValidators
             if (!option.HasValue()) return ValidationResult.Success;
             var val = option.Value();
 
-            if (val.Length < 1)
+            if (! new[] {"A", "CNAME"}.Contains(val))
             {
-                return new ValidationResult($"The value for --{option.LongName} must not be empty");
-            }
-            if (val.Length > 10)
-            {
-                return new ValidationResult($"The value for --{option.LongName} must be 10 characters in length or less");
+                return new ValidationResult($"The value for --{option.LongName} must be one of the following: A, CNAME.");
             }
 
             return ValidationResult.Success;

@@ -1,6 +1,6 @@
 using System;
 
-namespace dnspush.Hosts.Namecheap
+namespace DnsPush.Core.Hosts.Namecheap
 {
     public struct NamecheapUpdateRecordOptions
     {

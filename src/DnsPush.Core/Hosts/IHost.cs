@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace dnspush.Hosts
+namespace DnsPush.Core.Hosts
 {
     public interface IHost<TOptions, TUpdateRecordOptions>
         where TOptions : new()

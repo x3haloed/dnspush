@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E37C4F38-535F-4160-ACF2-41FCB2BFB85A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dnspush", "src\dnspush\dnspush.csproj", "{A8B8BB3C-0D00-4879-B864-71A586E04278}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnsPush.Console", "src\DnsPush.Console\DnsPush.Console.csproj", "{A8B8BB3C-0D00-4879-B864-71A586E04278}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnsPush.Core", "src\DnsPush.Core\DnsPush.Core.csproj", "{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +34,21 @@ Global
 		{A8B8BB3C-0D00-4879-B864-71A586E04278}.Release|x64.Build.0 = Release|Any CPU
 		{A8B8BB3C-0D00-4879-B864-71A586E04278}.Release|x86.ActiveCfg = Release|Any CPU
 		{A8B8BB3C-0D00-4879-B864-71A586E04278}.Release|x86.Build.0 = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|x64.Build.0 = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Debug|x86.Build.0 = Debug|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|x64.ActiveCfg = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|x64.Build.0 = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|x86.ActiveCfg = Release|Any CPU
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A8B8BB3C-0D00-4879-B864-71A586E04278} = {E37C4F38-535F-4160-ACF2-41FCB2BFB85A}
+		{72FDDC6E-ADE7-4DF0-BBCA-CED594B30316} = {E37C4F38-535F-4160-ACF2-41FCB2BFB85A}
 	EndGlobalSection
 EndGlobal

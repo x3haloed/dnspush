@@ -4,7 +4,7 @@ using System.Net;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.Validation;
 
-namespace dnspush.OptionValidators
+namespace DnsPush.Core.OptionValidators
 {
     public class AddressFormatValidator : IOptionValidator
     {

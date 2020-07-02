@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Serilog;
 
-namespace dnspush.Hosts.Namecheap
+namespace DnsPush.Core.Hosts.Namecheap
 {
     public class NamecheapHost : IHost<NamecheapOptions, NamecheapUpdateRecordOptions>, IDisposable
     {

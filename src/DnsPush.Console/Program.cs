@@ -1,10 +1,10 @@
 ﻿using System;
-using dnspush.Hosts.Namecheap;
-using dnspush.OptionValidators;
+using DnsPush.Core.Hosts.Namecheap;
+using DnsPush.Core.OptionValidators;
 using McMaster.Extensions.CommandLineUtils;
 using Serilog;
 
-namespace dnspush
+namespace DnsPush.Console
 {
     class Program
     {

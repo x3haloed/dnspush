@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace dnspush.Hosts
+namespace DnsPush.Core.Hosts
 {
     public static class HostHelpers
     {
