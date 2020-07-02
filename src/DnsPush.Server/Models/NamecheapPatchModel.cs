@@ -33,7 +33,7 @@ namespace  DnsPush.Server.Models
             bool isValidIpAddress = IPAddress.TryParse(Address, out _);
             if (!isValidIpAddress && !Uri.TryCreate(Address, UriKind.Absolute, out _))
             {
-                results.Add(new ValidationResult($"The value for \"{nameof(Address)}\" must be a valid IPv4 address"));
+                results.Add(new ValidationResult($"The value for \"{nameof(Address)}\" must be either a valid IP address or URL"));
             }
 
             if(results.Count == 0) {

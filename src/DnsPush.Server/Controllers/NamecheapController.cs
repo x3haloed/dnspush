@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DnsPush.Server.Models;
 using DnsPush.Core.Hosts.Namecheap;
+using System.Threading;
+using System.Net;
+using DnsPush.Server.Models.Options;
+using Microsoft.Extensions.Options;
+using DnsPush.Core.Hosts;
 
 namespace DnsPush.Server.Controllers
 {
@@ -15,25 +18,28 @@ namespace DnsPush.Server.Controllers
     [Route("namecheap")]
     public class NamecheapController : ControllerBase
     {
-        public NamecheapController(ILogger<NamecheapController> logger)
+        public NamecheapController(IOptions<NamecheapOptionsModel> options, ILogger<NamecheapController> logger)
         {
             logger.LogDebug("{ClassName} constructor called.", nameof(NamecheapController));
+            _options = options.Value;
             _logger = logger;
         }
 
+        private readonly NamecheapOptionsModel _options;
         private readonly ILogger<NamecheapController> _logger;
 
         [HttpPatch("{sld}/{tld}/{hostName}/{recordType}")]
-        public async Task PatchAsync(
+        public async Task<ActionResult<PatchResultModel>> PatchAsync(
             [FromRoute, Required, MaxLength(70)] string sld,
             [FromRoute, Required, MaxLength(10)] string tld,
             [FromRoute, Required] string hostName,
             [FromRoute, Required, RegularExpression("^A|CNAME$")] string recordType,
-            [FromBody] NamecheapPatchModel model)
+            [FromBody] NamecheapPatchModel model,
+            CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
-                return ModelState;
+                return BadRequest(ModelState);
             }
 
             var hostOptions = new NamecheapOptions
@@ -41,8 +47,8 @@ namespace DnsPush.Server.Controllers
                 ApiUser = model.ApiUser,
                 ApiKey = model.ApiKey,
                 UserName = string.IsNullOrEmpty(model.UserName) ? model.ApiUser : model.UserName,
-                ClientIp = ,
-                IsSandbox = ,
+                ClientIp = _options.ClientIp,
+                IsSandbox = _options.Sandbox,
             };
             _logger.LogInformation("Host options configured.");
             _logger.LogDebug("{options}", hostOptions);
@@ -61,12 +67,27 @@ namespace DnsPush.Server.Controllers
             _logger.LogInformation("Update options configured.");
             _logger.LogDebug("{options}", updateOptions);
 
-            bool updateSuccess = await host.UpdateRecordAsync(updateOptions, cancellationToken);
-            _logger.LogDebug("Update completed with status: {status}.", updateSuccess);
+            UpdateRecordResult updateResult = await host.UpdateRecordAsync(updateOptions, cancellationToken);
+            _logger.LogDebug("Update completed with status: {status}.", updateResult.Success);
 
-            int appStatusCode = updateSuccess ? 0 : 1;
-            _logger.LogDebug("Patch execution complete. Exiting with status code: {status}", appStatusCode);
-            return appStatusCode;
+            if (updateResult.Success)
+            {
+                return Ok(new PatchResultModel
+                {
+                    Success = true,
+                });
+            }
+
+            return new ContentResult
+            {
+                Content = JsonSerializer.Serialize(new PatchResultModel
+                {
+                    Success = false,
+                    Errors = updateResult.Errors,
+                }),
+                ContentType = "application/json",
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+            };
         }
     }
 }

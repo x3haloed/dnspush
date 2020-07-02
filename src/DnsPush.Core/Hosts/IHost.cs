@@ -10,6 +10,6 @@ namespace DnsPush.Core.Hosts
     {
         string Key { get; }
         string DisplayName { get; }
-        Task<bool> UpdateRecordAsync(TUpdateRecordOptions options, CancellationToken cancellationToken);
+        Task<UpdateRecordResult> UpdateRecordAsync(TUpdateRecordOptions options, CancellationToken cancellationToken);
     }
 }

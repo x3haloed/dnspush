@@ -80,7 +80,8 @@ namespace DnsPush.Core.Hosts.Namecheap
             Log.Debug("Host options configured.");
         }
 
-        public async Task<bool> UpdateRecordAsync(NamecheapUpdateRecordOptions options, CancellationToken cancellationToken)
+        public async Task<UpdateRecordResult> UpdateRecordAsync(
+            NamecheapUpdateRecordOptions options, CancellationToken cancellationToken)
         {
             Log.Debug("{MethodName} called.", nameof(UpdateRecordAsync));
 
@@ -163,7 +164,7 @@ namespace DnsPush.Core.Hosts.Namecheap
                 if (!response.IsSuccessStatusCode)
                 {
                     Log.Error("DNS records request failed with status: {status}", response.StatusCode);
-                    return false;
+                    return new UpdateRecordResult(false, new [] { "DNS records request failed with status: " + response.StatusCode });
                 }
 
                 responseDocument = XDocument.Parse(await response.Content.ReadAsStringAsync());
@@ -183,13 +184,13 @@ namespace DnsPush.Core.Hosts.Namecheap
             {
                 Log.Error("DNS records request failed: {errors}", docRoot.Descendants(defaultNs.GetName("Error")));
                 Log.Information("DNS records request failed. Quitting with failure status.");
-                return false;
+                return new UpdateRecordResult(false, docRoot.Descendants(defaultNs.GetName("Error")).Select(e => e.Value));
             }
             else if (!"OK".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
             {
                 Log.Error("DNS records request resulted in an unexpected status: {response}", responseDocument);
                 Log.Information("DNS records request failed. Quitting with failure status.");
-                return false;
+                return new UpdateRecordResult(false, new [] { "DNS records request resulted in an unexpected status: " + responseStatus });
             }
 
             Log.Information("Finding host record to update...");
@@ -239,7 +240,7 @@ namespace DnsPush.Core.Hosts.Namecheap
                 if (!response.IsSuccessStatusCode)
                 {
                     Log.Error("DNS update request failed with status: {status}", response.StatusCode);
-                    return false;
+                    return new UpdateRecordResult(false, new [] { "DNS update request failed with status: " + response.StatusCode });
                 }
 
                 responseDocument = XDocument.Parse(await response.Content.ReadAsStringAsync());
@@ -256,16 +257,16 @@ namespace DnsPush.Core.Hosts.Namecheap
             {
                 Log.Error("DNS update request failed: {errors}", docRoot.Descendants(defaultNs.GetName("Error")));
                 Log.Information("DNS update request failed. Quitting with failure status.");
-                return false;
+                return new UpdateRecordResult(false, docRoot.Descendants(defaultNs.GetName("Error")).Select(e => e.Value));
             }
             else if (!"OK".Equals(responseStatus, StringComparison.OrdinalIgnoreCase))
             {
                 Log.Error("DNS update request resulted in an unexpected status: {response}", responseDocument);
                 Log.Information("DNS update request failed. Quitting with failure status.");
-                return false;
+                return new UpdateRecordResult(false, new [] { "DNS records request resulted in an unexpected status: " + responseStatus });
             }
 
-            return true;
+            return new UpdateRecordResult(true, null);
         }
 
         public void Dispose()

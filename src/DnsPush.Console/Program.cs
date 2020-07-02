@@ -1,4 +1,5 @@
 ﻿using System;
+using DnsPush.Core.Hosts;
 using DnsPush.Core.Hosts.Namecheap;
 using DnsPush.Core.OptionValidators;
 using McMaster.Extensions.CommandLineUtils;
@@ -131,10 +132,10 @@ namespace DnsPush.Console
                 Log.Information("Update options configured.");
                 Log.Debug("{options}", updateOptions);
 
-                bool updateSuccess = await host.UpdateRecordAsync(updateOptions, cancellationToken);
-                Log.Debug("Update completed with status: {status}.", updateSuccess);
+                UpdateRecordResult updateResult = await host.UpdateRecordAsync(updateOptions, cancellationToken);
+                Log.Debug("Update completed with status: {status}.", updateResult.Success);
 
-                int appStatusCode = updateSuccess ? 0 : 1;
+                int appStatusCode = updateResult.Success ? 0 : 1;
                 Log.Debug("App execution complete. Exiting with status code: {status}", appStatusCode);
                 return appStatusCode;
             });
