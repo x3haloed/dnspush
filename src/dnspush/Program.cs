@@ -2,6 +2,7 @@
 using dnspush.Hosts.Namecheap;
 using dnspush.OptionValidators;
 using McMaster.Extensions.CommandLineUtils;
+using Serilog;
 
 namespace dnspush
 {
@@ -9,6 +10,12 @@ namespace dnspush
     {
         static int Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .MinimumLevel.Debug()
+                .CreateLogger();
+            Log.Information("The global logger has been configured");
+
             var app = new CommandLineApplication();
 
             app.HelpOption();
@@ -95,6 +102,8 @@ namespace dnspush
                 CommandOptionType.NoValue
             );
 
+            Log.Information("Program options configured.");
+
             app.OnExecuteAsync(async cancellationToken =>
             {
                 var hostOptions = new NamecheapOptions
@@ -105,7 +114,10 @@ namespace dnspush
                     ClientIp = optionClientIp.Value(),
                     IsSandbox = optionSandbox.HasValue(),
                 };
+                Log.Information("Host options configured.");
+                Log.Debug("{options}", hostOptions);
                 using var host = new NamecheapHost(hostOptions);
+                Log.Information("Host created");
 
                 var updateOptions = new NamecheapUpdateRecordOptions
                 {
@@ -116,12 +128,18 @@ namespace dnspush
                     Address = optionAddress.Value(),
                     Ttl = optionTtl.HasValue() ? optionTtl.ParsedValue : default,
                 };
+                Log.Information("Update options configured.");
+                Log.Debug("{options}", updateOptions);
 
-                await host.UpdateRecordAsync(updateOptions, cancellationToken);
+                bool updateSuccess = await host.UpdateRecordAsync(updateOptions, cancellationToken);
+                Log.Debug("Update completed with status: {status}.", updateSuccess);
 
-                return 0;
+                int appStatusCode = updateSuccess ? 0 : 1;
+                Log.Debug("App execution complete. Exiting with status code: {status}", appStatusCode);
+                return appStatusCode;
             });
 
+            Log.Information("Executing app...");
             return app.Execute(args);
         }
     }
