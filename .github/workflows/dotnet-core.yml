@@ -23,45 +23,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish
-      run: |
-        dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r win-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r win-x86 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r win-x86 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r win-arm --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r win-arm --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r osx-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r osx-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r linux-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r linux-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r linux-musl-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r linux-musl-x64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r linux-arm --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r linux-arm --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-        dotnet publish -r linux-arm64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
-        dotnet publish -r linux-arm64 --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
-    - name: Upload Server Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        # Artifact name
-        name: server-${{ env.name }}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/src/DnsPush.Server/**/publish/*
-    - name: Upload Console Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        # Artifact name
-        name: console-${{ env.name }}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: ${{ github.workspace }}/src/DnsPush.Console/**/publish/*
         
   publish:
 
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runtime_id: ['win-x64', 'win-x86', 'win-arm', 'osx-x64', 'linux-x64', 'linux-x86', 'linux-musl-x64', 'linux-arm', 'linux-arm64']
+        runtime_id: ['win-x64', 'win-x86', 'win-arm', 'osx-x64', 'linux-x64', 'linux-musl-x64', 'linux-arm', 'linux-arm64']
     steps:
     - uses: actions/checkout@v2
     - name: Publish
