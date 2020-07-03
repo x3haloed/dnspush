@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_and_test:
 
     runs-on: ubuntu-latest
 
@@ -53,5 +53,32 @@ jobs:
       with:
         # Artifact name
         name: console-${{ env.name }}
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ${{ github.workspace }}/src/DnsPush.Console/**/publish/*
+        
+  publish:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runtime_id: ['win-x64', 'win-x86', 'win-arm', 'osx-x64', 'linux-x64', 'linux-x86', 'linux-musl-x64', 'linux-arm', 'linux-arm64']
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish
+      run: |
+        dotnet publish -r ${{ matrix.runtime_id }} --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Server/DnsPush.Server.csproj
+        dotnet publish -r ${{ matrix.runtime_id }} --configuration Release /p:PublishSingleFile=true ${{ github.workspace }}/src/DnsPush.Console/DnsPush.Console.csproj
+    - name: Upload Server Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: server-${{ matrix.runtime_id }}
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ${{ github.workspace }}/src/DnsPush.Server/**/publish/*
+    - name: Upload Console Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: console-${{ matrix.runtime_id }}
         # A file, directory or wildcard pattern that describes what to upload
         path: ${{ github.workspace }}/src/DnsPush.Console/**/publish/*
