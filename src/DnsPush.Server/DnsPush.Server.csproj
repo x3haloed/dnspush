@@ -2,6 +2,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DnsPush.Core\DnsPush.Core.csproj" />
+    <ProjectReference Include="..\DnsPush.Server.ServiceProxy\DnsPush.Server.ServiceProxy.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <PropertyGroup>

@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using DnsPush.Server.Models;
+using DnsPush.Server.ServiceProxy.Models;
 using DnsPush.Core.Hosts.Namecheap;
 using System.Threading;
 using System.Net;

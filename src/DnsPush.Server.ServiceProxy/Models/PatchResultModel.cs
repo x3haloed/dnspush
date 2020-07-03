@@ -1,4 +1,4 @@
-namespace DnsPush.Server.Models
+namespace DnsPush.Server.ServiceProxy.Models
 {
     public class PatchResultModel
     {

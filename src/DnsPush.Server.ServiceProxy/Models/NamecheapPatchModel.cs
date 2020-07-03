@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Sockets;
 
-namespace  DnsPush.Server.Models
+namespace  DnsPush.Server.ServiceProxy.Models
 {
     public class NamecheapPatchModel : IValidatableObject
     {
