@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace  DnsPush.Server.ServiceProxy.Models
 {
-    public class NamecheapPatchModel : IValidatableObject
+    public class NamecheapPutModel : IValidatableObject
     {
         [Required]
         [MaxLength(20)]

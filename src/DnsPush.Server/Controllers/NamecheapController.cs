@@ -28,13 +28,13 @@ namespace DnsPush.Server.Controllers
         private readonly NamecheapOptionsModel _options;
         private readonly ILogger<NamecheapController> _logger;
 
-        [HttpPatch("{sld}/{tld}/{hostName}/{recordType}")]
-        public async Task<ActionResult<PatchResultModel>> PatchAsync(
+        [HttpPut("{sld}/{tld}/{hostName}/{recordType}")]
+        public async Task<ActionResult<PutResultModel>> PutAsync(
             [FromRoute, Required, MaxLength(70)] string sld,
             [FromRoute, Required, MaxLength(10)] string tld,
             [FromRoute, Required] string hostName,
             [FromRoute, Required, RegularExpression("^A|CNAME$")] string recordType,
-            [FromBody] NamecheapPatchModel model,
+            [FromBody] NamecheapPutModel model,
             CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
@@ -72,7 +72,7 @@ namespace DnsPush.Server.Controllers
 
             if (updateResult.Success)
             {
-                return Ok(new PatchResultModel
+                return Ok(new PutResultModel
                 {
                     Success = true,
                 });
@@ -80,7 +80,7 @@ namespace DnsPush.Server.Controllers
 
             return new ContentResult
             {
-                Content = JsonSerializer.Serialize(new PatchResultModel
+                Content = JsonSerializer.Serialize(new PutResultModel
                 {
                     Success = false,
                     Errors = updateResult.Errors,
